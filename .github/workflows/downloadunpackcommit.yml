@@ -5,21 +5,27 @@ on:
     inputs:
       artifact_url:
         description: "The url of the Dataverse record ID for the artifact created by the pipelines (Example: https://[your-env].crm.dynamics.com/api/data/v9.0/deploymentartifacts([your-artifact-id])/artifactfile/$value)."
+        default: "https://org48448b9d.api.crm4.dynamics.com/api/data/v9.0/deploymentartifacts(f4a0f024-72c6-ee11-9079-000d3a2dda5a)/artifactfile/$value"
         required: true
       solution_name:
         description: "Name of the Solution in Dataverse environment"
+        default: "mpa_ITBase"
         required: true
       user_name: 
         description: "User name for the commit"
+        default: "vadkerti"
         required: true
       source_branch:
         description: "Branch for the solution commit"
+        default: "main"
         required: true
       target_branch:
         description: "Branch to create for the solution commit"
+        default: "dev"
         required: false
       commit_message:
         description: "Message to provide for the commit"
+        default: "test without dataverse trigger"
         required: true
 permissions:
   contents: write
