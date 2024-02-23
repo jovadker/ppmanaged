@@ -15,6 +15,9 @@ on:
         description: "User name for the commit"
         default: "vadkerti"
         required: true
+      user_email:
+        description: "User name email address"
+        required: true
       source_branch:
         description: "Branch for the solution commit"
         default: "main"
@@ -93,6 +96,7 @@ jobs:
           rm -rf ${{ github.event.inputs.solution_name }}.zip
           rm -rf ${{ github.event.inputs.solution_name }}_managed.zip
           git config user.name ${{ github.event.inputs.user_name }}
+          git config user.email ${{ github.event.inputs.user_email }}
           git pull 
           git add --all
           git commit -am "${{ github.event.inputs.commit_message }}" --allow-empty
