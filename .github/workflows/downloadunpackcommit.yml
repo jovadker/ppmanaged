@@ -21,7 +21,6 @@ on:
         required: true
       target_branch:
         description: "Branch to create for the solution commit"
-        default: "dev"
         required: false
       commit_message:
         description: "Message to provide for the commit"
