@@ -71,6 +71,8 @@ jobs:
             response=$(curl -H "Authorization: Bearer $spnToken" \
               -X GET $unmanaged_artifact_url \
               -o "${{ github.event.inputs.solution_name }}.zip")
+            #get directory content
+            dir
             
       # Unpack the solution to a folder named as the solution
       - name: unpack solution
