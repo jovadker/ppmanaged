@@ -79,6 +79,16 @@ jobs:
             $bytes = [Convert]::FromBase64String($response.value)
             [IO.File]::WriteAllBytes("${{ github.event.inputs.solution_name }}.zip", $bytes)
 
+      - uses: actions/upload-artifact@v4.3.1
+        with:
+          name: ManagedSolution
+          path: ./${{ github.event.inputs.solution_name }}_managed.zip
+
+      - uses: actions/upload-artifact@v4.3.1
+        with:
+          name: UnmanagedSolution
+          path: ./${{ github.event.inputs.solution_name }}.zip
+
       # Unpack the solution to a folder named as the solution
       - name: unpack solution
         uses: microsoft/powerplatform-actions/unpack-solution@v0
