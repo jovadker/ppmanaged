@@ -1,4 +1,4 @@
-name: Download, unpack and commit the solution to git
+name: DownloadUnpackCommitBash
 run-name: VersionControlIntegration-Bash
 on:
   workflow_dispatch:
