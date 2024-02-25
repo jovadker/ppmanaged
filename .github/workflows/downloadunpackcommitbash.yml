@@ -59,6 +59,7 @@ jobs:
         run: |
             aadHost="login.microsoftonline.com"
             url="${{ github.event.inputs.artifact_url }}"
+            echo "Url: $url"
             dataverseHost=$(echo $url | cut -d'/' -f3)
             body="client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&grant_type=client_credentials&scope=https://$dataverseHost/.default"
             OAuthReq=$(curl -s -X POST "https://$aadHost/${TENANT_ID}/oauth2/v2.0/token" -d $body)
