@@ -1,5 +1,5 @@
-name: Download, unpack and commit the solution to git
-run-name: Getting ${{ github.event.inputs.solution_name }} from pipelines host environment and committing
+name: DownloadUnpackCommitPwsh
+run-name: DownloadUnpackCommitPwsh
 on:
   workflow_dispatch:
     inputs:
