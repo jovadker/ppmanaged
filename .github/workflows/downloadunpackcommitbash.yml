@@ -44,9 +44,9 @@ jobs:
       - name: create new branch if specified
         shell: bash
         run: |
-            if('${{ github.event.inputs.target_branch }}' -ne '') {
-                git checkout -b ${{ github.event.inputs.target_branch }} ${{ github.event.inputs.source_branch }}
-            }
+            if [ -n "${{ github.event.inputs.target_branch }}" ]; then
+              git checkout -b ${{ github.event.inputs.target_branch }} ${{ github.event.inputs.source_branch }}
+            fi    
 
       # Export the solution from the artifact created by pipelines
       - name: download solution from artifact
