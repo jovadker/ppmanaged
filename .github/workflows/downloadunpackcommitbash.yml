@@ -61,6 +61,7 @@ jobs:
             url="${{ github.event.inputs.artifact_url }}"
             echo "Url: $url"
             dataverseHost=$(echo $url | cut -d'/' -f3)
+            echo "Dataverse host: $dataverseHost"
             body="client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&grant_type=client_credentials&scope=https://$dataverseHost/.default"
             OAuthReq=$(curl -s -X POST "https://$aadHost/${TENANT_ID}/oauth2/v2.0/token" -d $body)
             spnToken=$(echo $OAuthReq | jq -r .access_token)
