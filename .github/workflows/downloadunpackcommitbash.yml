@@ -17,6 +17,7 @@ on:
         required: true
       user_email:
         description: "User name email address"
+        default: "jozsef.vadkerti@hotmail.com"
         required: true
       source_branch:
         description: "Branch for the solution commit"
@@ -73,7 +74,7 @@ jobs:
               -o "${{ github.event.inputs.solution_name }}.zip")
             #get directory content
             dir
-            - name: Upload a Build Artifact
+            
       
       - uses: actions/upload-artifact@v4.3.1
         with:
