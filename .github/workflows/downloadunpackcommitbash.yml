@@ -59,7 +59,7 @@ jobs:
         run: |
             aadHost="login.microsoftonline.com"
             #adding $value to the end of the artifact url to download binary content
-            url="${{ github.event.inputs.artifact_url }}"+"/\$value"
+            url="${{ github.event.inputs.artifact_url }}/\$value"
             echo "Url: $url"
             dataverseHost=$(echo $url | cut -d'/' -f3)
             echo "Dataverse host: $dataverseHost"
