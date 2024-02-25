@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       artifact_url:
-        description: "The url of the Dataverse record ID for the artifact created by the pipelines (Example: https://[your-env].crm.dynamics.com/api/data/v9.0/deploymentartifacts([your-artifact-id])/artifactfile/$value)."
-        default: "https://org48448b9d.api.crm4.dynamics.com/api/data/v9.0/deploymentartifacts(608b13e5-4dd2-ee11-9078-000d3a474a45)/artifactfile/$value"
+        description: "The url of the Dataverse record ID for the artifact created by the pipelines (Example: https://[your-env].crm.dynamics.com/api/data/v9.0/deploymentartifacts([your-artifact-id])/artifactfile)."
+        default: "https://org48448b9d.api.crm4.dynamics.com/api/data/v9.0/deploymentartifacts(608b13e5-4dd2-ee11-9078-000d3a474a45)/artifactfile"
         required: true
       solution_name:
         description: "Name of the Solution in Dataverse environment"
@@ -58,7 +58,8 @@ jobs:
         shell: bash
         run: |
             aadHost="login.microsoftonline.com"
-            url="${{ github.event.inputs.artifact_url }}"
+            #adding $value to the end of the artifact url to download binary content
+            url="${{ github.event.inputs.artifact_url }}"+"/\$value"
             echo "Url: $url"
             dataverseHost=$(echo $url | cut -d'/' -f3)
             echo "Dataverse host: $dataverseHost"
