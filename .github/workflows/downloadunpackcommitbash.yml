@@ -73,6 +73,18 @@ jobs:
               -o "${{ github.event.inputs.solution_name }}.zip")
             #get directory content
             dir
+            - name: Upload a Build Artifact
+      
+      - uses: actions/upload-artifact@v4.3.1
+        with:
+          name: ManagedSolution
+          path: ./${{ github.event.inputs.solution_name }}_managed.zip
+
+      - uses: actions/upload-artifact@v4.3.1
+        with:
+          name: UnmanagedSolution
+          path: ./${{ github.event.inputs.solution_name }}.zip
+          
             
       # Unpack the solution to a folder named as the solution
       - name: unpack solution
