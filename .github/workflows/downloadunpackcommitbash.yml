@@ -1,11 +1,11 @@
 name: Download, unpack and commit the solution to git
-run-name: Getting ${{ github.event.inputs.solution_name }} from pipelines host environment and committing
+run-name: VersionControlIntegration-Bash
 on:
   workflow_dispatch:
     inputs:
       artifact_url:
         description: "The url of the Dataverse record ID for the artifact created by the pipelines (Example: https://[your-env].crm.dynamics.com/api/data/v9.0/deploymentartifacts([your-artifact-id])/artifactfile/$value)."
-        default: "https://org48448b9d.api.crm4.dynamics.com/api/data/v9.0/deploymentartifacts(f4a0f024-72c6-ee11-9079-000d3a2dda5a)/artifactfile/$value"
+        default: "https://org48448b9d.api.crm4.dynamics.com/api/data/v9.0/deploymentartifacts(608b13e5-4dd2-ee11-9078-000d3a474a45)/artifactfile/$value"
         required: true
       solution_name:
         description: "Name of the Solution in Dataverse environment"
@@ -42,7 +42,7 @@ jobs:
 
       # Commit changes to the existing or new branch
       - name: create new branch if specified
-        shell: pwsh
+        shell: bash
         run: |
             if('${{ github.event.inputs.target_branch }}' -ne '') {
                 git checkout -b ${{ github.event.inputs.target_branch }} ${{ github.event.inputs.source_branch }}
@@ -54,31 +54,25 @@ jobs:
             CLIENT_ID: ${{secrets.CLIENT_ID}}   
             TENANT_ID: ${{secrets.TENANT_ID}}   
             CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
-        shell: pwsh
+        shell: bash
         run: |
             $aadHost = "login.microsoftonline.com"
             $url = "${{ github.event.inputs.artifact_url }}"
-            $options = [System.StringSplitOptions]::RemoveEmptyEntries
-            $dataverseHost = $url.Split("://", $options)[1].Split("/")[0]
 
-            $body = @{client_id = $env:CLIENT_ID; client_secret = $env:CLIENT_SECRET; grant_type = "client_credentials"; scope = "https://$dataverseHost/.default"; }
-            $OAuthReq = Invoke-RestMethod -Method Post -Uri "https://$aadHost/$env:TENANT_ID/oauth2/v2.0/token" -Body $body
-            $spnToken = $OAuthReq.access_token
-            $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-            $headers.Add("Authorization", "Bearer $spnToken")
-            $headers.Add("Content-Type", "application/json")
-
+            dataverseHost=$(echo $url | cut -d'/' -f3)
+            body="client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&grant_type=client_credentials&scope=https://$dataverseHost/.default"
+            OAuthReq=$(curl -s -X POST "https://$aadHost/${TENANT_ID}/oauth2/v2.0/token" -d $body)
+            spnToken=$(echo $OAuthReq | jq -r .access_token)
             # Download the managed solution
-            $response = Invoke-RestMethod "${{ github.event.inputs.artifact_url }}" -Method 'GET' -Headers $headers
-            $bytes = [Convert]::FromBase64String($response.value)
-            [IO.File]::WriteAllBytes("${{ github.event.inputs.solution_name }}_managed.zip", $bytes)
-
+            response=$(curl -H "Authorization: Bearer $spnToken" \
+              -X GET $url \
+              -o "${{ github.event.inputs.solution_name }}_managed.zip")
             # Download the unmanaged solution (for now we will need to use string manipulation to get the unmanaged solution URL, until the API provides this value)
-            $unmanaged_artifact_url = "${{ github.event.inputs.artifact_url }}".Replace("artifactfile", "artifactfileunmanaged")
-            $response = Invoke-RestMethod "$unmanaged_artifact_url" -Method 'GET' -Headers $headers
-            $bytes = [Convert]::FromBase64String($response.value)
-            [IO.File]::WriteAllBytes("${{ github.event.inputs.solution_name }}.zip", $bytes)
-
+            unmanaged_artifact_url=$(echo "$url" | sed 's/artifactfile/artifactfileunmanaged/g')
+            response=$(curl -H "Authorization: Bearer $spnToken" \
+              -X GET $unmanaged_artifact_url \
+              -o "${{ github.event.inputs.solution_name }}.zip")
+            
       # Unpack the solution to a folder named as the solution
       - name: unpack solution
         uses: microsoft/powerplatform-actions/unpack-solution@v0
@@ -91,7 +85,7 @@ jobs:
 
       # Commit changes to the existing or new branch
       - name: commit changes
-        shell: pwsh
+        shell: bash
         run: |
           rm -rf ${{ github.event.inputs.solution_name }}.zip
           rm -rf ${{ github.event.inputs.solution_name }}_managed.zip
@@ -103,10 +97,10 @@ jobs:
 
       # Push the committed changes to the source branch
       - name: push to branch
-        shell: pwsh
+        shell: bash
         run: |
-          if('${{ github.event.inputs.target_branch }}' -ne '') {
-              git push origin ${{ github.event.inputs.target_branch }}
-          } else {
-              git push origin ${{ github.event.inputs.source_branch }}
-          }
+          if [ -n "${{ github.event.inputs.target_branch }}" ]; then
+            git push origin "${{ github.event.inputs.target_branch }}"
+          else
+            git push origin "${{ github.event.inputs.source_branch }}"
+          fi
