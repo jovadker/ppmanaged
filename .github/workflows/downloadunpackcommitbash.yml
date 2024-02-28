@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       artifact_url:
-        description: "The url of the Dataverse record ID for the artifact created by the pipelines (Example: https://[your-env].crm.dynamics.com/api/data/v9.0/deploymentartifacts([your-artifact-id])/artifactfile)."
+        description: "The url of the Dataverse record ID for the artifact created by the pipelines (Example: https://[your-env].api.crm.dynamics.com/api/data/v9.0/deploymentartifacts([your-artifact-id])/artifactfile)."
         default: "https://org48448b9d.api.crm4.dynamics.com/api/data/v9.0/deploymentartifacts(608b13e5-4dd2-ee11-9078-000d3a474a45)/artifactfile"
         required: true
       solution_name:
