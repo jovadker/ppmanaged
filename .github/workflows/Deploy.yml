@@ -1,0 +1,13 @@
+name: Call a reusable workflow
+
+on:
+  workflow_dispatch:
+  
+jobs:
+  call-workflow: 
+    uses: jovadker/ppmanaged/.github/workflows/install-paccli.yml@main
+    with:
+      version: 8
+      platform: ubuntu-latest
+
+  
