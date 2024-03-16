@@ -10,7 +10,7 @@ on:
        description: "platform, like ubuntu-latest or windows-latest"
 jobs:
   installpac:
-    runs-on: ubuntu-latest
+    runs-on: ${{inputs.platform}}
     steps:
     - uses: actions/github-script@v7.0.1
       with:
