@@ -15,7 +15,7 @@ jobs:
      - name: install pac cli
        shell: bash
        run: |
-          echo "version number: $ {{ inputs.version }}"
+          echo "version number: ${{inputs.version}}"
           dotnet tool install --global Microsoft.PowerApps.CLI.Tool
                 
         
