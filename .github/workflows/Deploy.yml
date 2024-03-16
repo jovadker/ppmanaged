@@ -9,5 +9,10 @@ jobs:
     with:
       version: 8
       platform: ubuntu-latest
+  call-workflow-windows: 
+    uses: jovadker/ppmanaged/.github/workflows/install-paccli.yml@main
+    with:
+      version: 8
+      platform: windows-latest
 
   
