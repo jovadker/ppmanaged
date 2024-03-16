@@ -4,6 +4,10 @@ on:
       version:
         required: true
         type: number
+      platform: 
+       required: true
+       type: string
+       description: "platform, like ubuntu-latest or windows-latest"
 jobs:
   installpac:
     runs-on: ubuntu-latest
